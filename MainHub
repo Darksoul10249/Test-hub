@@ -1,0 +1,1923 @@
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 1/?
+--// GUI FOUNDATION
+--// Insert this into a LocalScript
+--//========================================================--
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+----------------------------------------------------
+-- SETTINGS
+----------------------------------------------------
+
+local THEME = {
+	Accent = Color3.fromRGB(150,0,255),
+	Background = Color3.fromRGB(18,18,18),
+	Background2 = Color3.fromRGB(30,30,30),
+	Text = Color3.fromRGB(255,255,255)
+}
+
+----------------------------------------------------
+-- GUI
+----------------------------------------------------
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "StudioHub"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = PlayerGui
+
+----------------------------------------------------
+-- GEAR BUTTON
+----------------------------------------------------
+
+local Gear = Instance.new("TextButton")
+Gear.Name = "GearButton"
+Gear.Parent = ScreenGui
+Gear.Size = UDim2.fromOffset(48,48)
+Gear.Position = UDim2.new(0,15,0.5,-24)
+Gear.BackgroundColor3 = THEME.Background
+Gear.Text = "⚙"
+Gear.TextScaled = true
+Gear.Font = Enum.Font.GothamBold
+Gear.TextColor3 = THEME.Text
+Gear.AutoButtonColor = false
+
+local GearCorner = Instance.new("UICorner")
+GearCorner.CornerRadius = UDim.new(1,0)
+GearCorner.Parent = Gear
+
+local GearStroke = Instance.new("UIStroke")
+GearStroke.Parent = Gear
+GearStroke.Color = THEME.Accent
+GearStroke.Thickness = 2
+
+----------------------------------------------------
+-- MAIN WINDOW
+----------------------------------------------------
+
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Parent = ScreenGui
+Main.Visible = false
+Main.AnchorPoint = Vector2.new(.5,.5)
+Main.Position = UDim2.fromScale(.5,.5)
+Main.Size = UDim2.fromOffset(420,520)
+Main.BackgroundColor3 = THEME.Background
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0,16)
+MainCorner.Parent = Main
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Parent = Main
+MainStroke.Color = THEME.Accent
+MainStroke.Thickness = 2
+
+----------------------------------------------------
+-- SCALE
+----------------------------------------------------
+
+local Scale = Instance.new("UIScale")
+Scale.Parent = Main
+Scale.Scale = 1
+
+----------------------------------------------------
+-- TITLE BAR
+----------------------------------------------------
+
+local TopBar = Instance.new("Frame")
+TopBar.Parent = Main
+TopBar.Size = UDim2.new(1,0,0,42)
+TopBar.BackgroundTransparency = 1
+
+local Title = Instance.new("TextLabel")
+Title.Parent = TopBar
+Title.BackgroundTransparency = 1
+Title.Size = UDim2.new(1,-80,1,0)
+Title.Position = UDim2.fromOffset(14,0)
+Title.Text = "Studio Hub"
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextScaled = true
+Title.TextColor3 = THEME.Text
+
+----------------------------------------------------
+-- MINIMIZE BUTTON
+----------------------------------------------------
+
+local Minimize = Instance.new("TextButton")
+Minimize.Parent = TopBar
+Minimize.AnchorPoint = Vector2.new(1,.5)
+Minimize.Position = UDim2.new(1,-12,.5,0)
+Minimize.Size = UDim2.fromOffset(28,28)
+Minimize.BackgroundColor3 = THEME.Background2
+Minimize.Text = "˅"
+Minimize.Font = Enum.Font.GothamBold
+Minimize.TextScaled = true
+Minimize.TextColor3 = THEME.Text
+
+local MinCorner = Instance.new("UICorner")
+MinCorner.CornerRadius = UDim.new(1,0)
+MinCorner.Parent = Minimize
+
+----------------------------------------------------
+-- CONTENT
+----------------------------------------------------
+
+local Content = Instance.new("ScrollingFrame")
+Content.Parent = Main
+Content.Position = UDim2.fromOffset(10,52)
+Content.Size = UDim2.new(1,-20,1,-62)
+Content.BackgroundTransparency = 1
+Content.BorderSizePixel = 0
+Content.ScrollBarThickness = 5
+Content.CanvasSize = UDim2.new()
+
+local Layout = Instance.new("UIListLayout")
+Layout.Parent = Content
+Layout.Padding = UDim.new(0,8)
+Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+Layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	Content.CanvasSize = UDim2.fromOffset(
+		0,
+		Layout.AbsoluteContentSize.Y + 20
+	)
+end)
+
+----------------------------------------------------
+-- OPEN / CLOSE
+----------------------------------------------------
+
+local Open = false
+
+local function ToggleHub()
+
+	Open = not Open
+
+	if Open then
+
+		Main.Visible = true
+
+		Main.Size = UDim2.fromOffset(420,0)
+
+		TweenService:Create(
+			Main,
+			TweenInfo.new(.25,Enum.EasingStyle.Quint),
+			{
+				Size = UDim2.fromOffset(420,520)
+			}
+		):Play()
+
+	else
+
+		local Tween = TweenService:Create(
+			Main,
+			TweenInfo.new(.25,Enum.EasingStyle.Quint),
+			{
+				Size = UDim2.fromOffset(420,0)
+			}
+		)
+
+		Tween:Play()
+
+		Tween.Completed:Wait()
+
+		Main.Visible = false
+
+	end
+
+end
+
+Gear.MouseButton1Click:Connect(ToggleHub)
+
+----------------------------------------------------
+-- TOGGLE CREATOR
+----------------------------------------------------
+
+local function CreateSection(Name)
+
+	local Holder = Instance.new("Frame")
+	Holder.Size = UDim2.new(1,-4,0,44)
+	Holder.BackgroundColor3 = THEME.Background2
+	Holder.Parent = Content
+
+	local Corner = Instance.new("UICorner")
+	Corner.CornerRadius = UDim.new(0,10)
+	Corner.Parent = Holder
+
+	local Stroke = Instance.new("UIStroke")
+	Stroke.Parent = Holder
+	Stroke.Color = THEME.Accent
+
+	local Label = Instance.new("TextLabel")
+	Label.Parent = Holder
+	Label.BackgroundTransparency = 1
+	Label.Position = UDim2.fromOffset(10,0)
+	Label.Size = UDim2.new(.6,0,1,0)
+	Label.Text = Name
+	Label.Font = Enum.Font.GothamBold
+	Label.TextScaled = true
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+	Label.TextColor3 = THEME.Text
+
+	return Holder
+
+end
+
+----------------------------------------------------
+-- DEMO SECTIONS
+----------------------------------------------------
+
+CreateSection("FPS Booster")
+CreateSection("Gradient")
+CreateSection("Theme")
+CreateSection("Settings")
+
+----------------------------------------------------
+-- PART 2 CONTINUES BELOW
+----------------------------------------------------
+
+--// INSERT NEXT PART BELOW THIS LINE
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 2/?
+--// DRAGGING + MINIMIZE + TOGGLES
+--// Paste directly below Part 1
+--//========================================================--
+
+----------------------------------------------------
+-- DRAG SYSTEM (Mouse + Touch)
+----------------------------------------------------
+
+local Dragging = false
+local DragInput
+local DragStart
+local StartPosition
+
+local function UpdateDrag(Input)
+
+	local Delta = Input.Position - DragStart
+
+	Main.Position = UDim2.new(
+		StartPosition.X.Scale,
+		StartPosition.X.Offset + Delta.X,
+		StartPosition.Y.Scale,
+		StartPosition.Y.Offset + Delta.Y
+	)
+
+end
+
+TopBar.InputBegan:Connect(function(Input)
+
+	if Input.UserInputType == Enum.UserInputType.MouseButton1
+	or Input.UserInputType == Enum.UserInputType.Touch then
+
+		Dragging = true
+		DragStart = Input.Position
+		StartPosition = Main.Position
+
+		Input.Changed:Connect(function()
+
+			if Input.UserInputState == Enum.UserInputState.End then
+				Dragging = false
+			end
+
+		end)
+
+	end
+
+end)
+
+TopBar.InputChanged:Connect(function(Input)
+
+	if Input.UserInputType == Enum.UserInputType.MouseMovement
+	or Input.UserInputType == Enum.UserInputType.Touch then
+
+		DragInput = Input
+
+	end
+
+end)
+
+UIS.InputChanged:Connect(function(Input)
+
+	if Input == DragInput and Dragging then
+		UpdateDrag(Input)
+	end
+
+end)
+
+----------------------------------------------------
+-- RESPONSIVE SCALE
+----------------------------------------------------
+
+local function UpdateScale()
+
+	local Viewport = workspace.CurrentCamera.ViewportSize
+
+	local Smallest = math.min(Viewport.X,Viewport.Y)
+
+	local ScaleValue = math.clamp(
+		Smallest / 700,
+		0.7,
+		1
+	)
+
+	Scale.Scale = ScaleValue
+
+end
+
+UpdateScale()
+
+workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(UpdateScale)
+
+----------------------------------------------------
+-- MINIMIZE
+----------------------------------------------------
+
+local Minimized = false
+
+local function SetMinimized(State)
+
+	Minimized = State
+
+	if Minimized then
+
+		Minimize.Text = "˄"
+
+		TweenService:Create(
+			Main,
+			TweenInfo.new(.25),
+			{
+				Size = UDim2.fromOffset(420,42)
+			}
+		):Play()
+
+		Content.Visible = false
+
+	else
+
+		Minimize.Text = "˅"
+
+		Content.Visible = true
+
+		TweenService:Create(
+			Main,
+			TweenInfo.new(.25),
+			{
+				Size = UDim2.fromOffset(420,520)
+			}
+		):Play()
+
+	end
+
+end
+
+Minimize.MouseButton1Click:Connect(function()
+
+	SetMinimized(not Minimized)
+
+end)
+
+----------------------------------------------------
+-- TOGGLE CREATOR
+----------------------------------------------------
+
+local function CreateToggle(Parent, Default, Callback)
+
+	local Toggle = Instance.new("TextButton")
+	Toggle.Parent = Parent
+	Toggle.AnchorPoint = Vector2.new(1,.5)
+	Toggle.Position = UDim2.new(1,-10,.5,0)
+	Toggle.Size = UDim2.fromOffset(55,26)
+	Toggle.Text = ""
+	Toggle.AutoButtonColor = false
+	Toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+
+	local Corner = Instance.new("UICorner")
+	Corner.CornerRadius = UDim.new(1,0)
+	Corner.Parent = Toggle
+
+	local Circle = Instance.new("Frame")
+	Circle.Parent = Toggle
+	Circle.Size = UDim2.fromOffset(22,22)
+	Circle.Position = UDim2.fromOffset(2,2)
+	Circle.BackgroundColor3 = Color3.new(1,1,1)
+
+	local CircleCorner = Instance.new("UICorner")
+	CircleCorner.CornerRadius = UDim.new(1,0)
+	CircleCorner.Parent = Circle
+
+	local Enabled = Default
+
+	local function Refresh()
+
+		if Enabled then
+
+			Toggle.BackgroundColor3 = THEME.Accent
+
+			TweenService:Create(
+				Circle,
+				TweenInfo.new(.15),
+				{
+					Position = UDim2.fromOffset(31,2)
+				}
+			):Play()
+
+		else
+
+			Toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+
+			TweenService:Create(
+				Circle,
+				TweenInfo.new(.15),
+				{
+					Position = UDim2.fromOffset(2,2)
+				}
+			):Play()
+
+		end
+
+		if Callback then
+			Callback(Enabled)
+		end
+
+	end
+
+	Toggle.MouseButton1Click:Connect(function()
+
+		Enabled = not Enabled
+
+		Refresh()
+
+	end)
+
+	Refresh()
+
+	return {
+
+		Get = function()
+
+			return Enabled
+
+		end,
+
+		Set = function(Value)
+
+			Enabled = Value
+
+			Refresh()
+
+		end
+
+	}
+
+end
+
+----------------------------------------------------
+-- CREATE DEFAULT TOGGLES
+----------------------------------------------------
+
+local FPSSection = CreateSection("FPS Booster")
+local GradientSection = CreateSection("Gradient")
+local ThemeSection = CreateSection("Theme")
+local SettingsSection = CreateSection("Settings")
+
+local Toggles = {}
+
+Toggles.FPS = CreateToggle(FPSSection,false)
+Toggles.Gradient = CreateToggle(GradientSection,false)
+Toggles.Theme = CreateToggle(ThemeSection,false)
+Toggles.Settings = CreateToggle(SettingsSection,false)
+
+----------------------------------------------------
+-- NOTIFICATION
+----------------------------------------------------
+
+local function Notify(Text)
+
+	pcall(function()
+
+		StarterGui:SetCore("SendNotification",{
+
+			Title = "Studio Hub",
+
+			Text = Text,
+
+			Duration = 1.5
+
+		})
+
+	end)
+
+end
+
+Notify("GUI Loaded")
+
+----------------------------------------------------
+-- PART 3 CONTINUES BELOW
+----------------------------------------------------
+
+--// INSERT NEXT PART BELOW THIS LINE
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 3/?
+--// COLOR SETTINGS (RGB + HEX)
+--// Paste directly below Part 2
+--//========================================================--
+
+----------------------------------------------------
+-- COLOR SETTINGS
+----------------------------------------------------
+
+local Settings = {
+	AccentColor = THEME.Accent
+}
+
+local function RGBToHex(color)
+	return string.format("#%02X%02X%02X",
+		math.floor(color.R * 255),
+		math.floor(color.G * 255),
+		math.floor(color.B * 255)
+	)
+end
+
+local function HexToColor(hex)
+	hex = hex:gsub("#","")
+
+	if #hex ~= 6 then
+		return nil
+	end
+
+	local r = tonumber(hex:sub(1,2),16)
+	local g = tonumber(hex:sub(3,4),16)
+	local b = tonumber(hex:sub(5,6),16)
+
+	if not r then
+		return nil
+	end
+
+	return Color3.fromRGB(r,g,b)
+end
+
+----------------------------------------------------
+-- COLOR SECTION
+----------------------------------------------------
+
+local ColorSection = Instance.new("Frame")
+ColorSection.Parent = Content
+ColorSection.Size = UDim2.new(1,-4,0,210)
+ColorSection.BackgroundColor3 = THEME.Background2
+
+Instance.new("UICorner",ColorSection).CornerRadius = UDim.new(0,10)
+
+local Stroke = Instance.new("UIStroke")
+Stroke.Parent = ColorSection
+Stroke.Color = THEME.Accent
+
+local Title = Instance.new("TextLabel")
+Title.Parent = ColorSection
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.fromOffset(10,8)
+Title.Size = UDim2.new(1,-20,0,24)
+Title.Text = "Accent Color"
+Title.Font = Enum.Font.GothamBold
+Title.TextColor3 = THEME.Text
+Title.TextScaled = true
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local Preview = Instance.new("Frame")
+Preview.Parent = ColorSection
+Preview.Position = UDim2.fromOffset(10,42)
+Preview.Size = UDim2.fromOffset(60,60)
+Preview.BackgroundColor3 = Settings.AccentColor
+Instance.new("UICorner",Preview).CornerRadius = UDim.new(0,8)
+
+local function CreateBox(name,y,default)
+
+	local label = Instance.new("TextLabel")
+	label.Parent = ColorSection
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.fromOffset(80,y)
+	label.Size = UDim2.fromOffset(18,24)
+	label.Text = name
+	label.Font = Enum.Font.GothamBold
+	label.TextColor3 = THEME.Text
+	label.TextScaled = true
+
+	local box = Instance.new("TextBox")
+	box.Parent = ColorSection
+	box.Position = UDim2.fromOffset(105,y)
+	box.Size = UDim2.fromOffset(60,24)
+	box.Text = tostring(default)
+	box.ClearTextOnFocus = false
+	box.BackgroundColor3 = THEME.Background
+	box.TextColor3 = THEME.Text
+	box.Font = Enum.Font.Gotham
+	box.TextScaled = true
+
+	Instance.new("UICorner",box).CornerRadius = UDim.new(0,6)
+
+	return box
+
+end
+
+local RBox = CreateBox("R",42,150)
+local GBox = CreateBox("G",72,0)
+local BBox = CreateBox("B",102,255)
+
+local HexBox = Instance.new("TextBox")
+HexBox.Parent = ColorSection
+HexBox.Position = UDim2.fromOffset(10,120)
+HexBox.Size = UDim2.new(1,-20,0,30)
+HexBox.BackgroundColor3 = THEME.Background
+HexBox.TextColor3 = THEME.Text
+HexBox.Text = RGBToHex(Settings.AccentColor)
+HexBox.ClearTextOnFocus = false
+HexBox.Font = Enum.Font.Gotham
+HexBox.TextScaled = true
+Instance.new("UICorner",HexBox).CornerRadius = UDim.new(0,6)
+
+local function ApplyAccent(color)
+
+	Settings.AccentColor = color
+
+	Preview.BackgroundColor3 = color
+	HexBox.Text = RGBToHex(color)
+
+	THEME.Accent = color
+
+	MainStroke.Color = color
+	GearStroke.Color = color
+	Stroke.Color = color
+
+	for _,obj in ipairs(Content:GetChildren()) do
+		local s = obj:FindFirstChildOfClass("UIStroke")
+		if s then
+			s.Color = color
+		end
+	end
+
+end
+
+local function UpdateFromRGB()
+
+	local r = math.clamp(tonumber(RBox.Text) or 0,0,255)
+	local g = math.clamp(tonumber(GBox.Text) or 0,0,255)
+	local b = math.clamp(tonumber(BBox.Text) or 0,0,255)
+
+	ApplyAccent(Color3.fromRGB(r,g,b))
+
+end
+
+RBox.FocusLost:Connect(UpdateFromRGB)
+GBox.FocusLost:Connect(UpdateFromRGB)
+BBox.FocusLost:Connect(UpdateFromRGB)
+
+HexBox.FocusLost:Connect(function()
+
+	local color = HexToColor(HexBox.Text)
+
+	if color then
+
+		RBox.Text = math.floor(color.R*255)
+		GBox.Text = math.floor(color.G*255)
+		BBox.Text = math.floor(color.B*255)
+
+		ApplyAccent(color)
+
+	end
+
+end)
+
+----------------------------------------------------
+-- PART 4 CONTINUES BELOW
+----------------------------------------------------
+
+--// INSERT NEXT PART BELOW THIS LINE
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 4/?
+--// THEME + SETTINGS BUTTONS
+--// Paste directly below Part 3
+--//========================================================--
+
+----------------------------------------------------
+-- SETTINGS STORAGE
+----------------------------------------------------
+
+local HubSettings = {
+	Theme = {
+		Accent = THEME.Accent,
+		Background = THEME.Background,
+		Background2 = THEME.Background2,
+		Text = THEME.Text
+	},
+
+	Graphics = {
+		ReducedGraphics = false,
+		HideParticles = false
+	}
+}
+
+----------------------------------------------------
+-- BUTTON CREATOR
+----------------------------------------------------
+
+local function CreateButton(Parent, Text)
+
+	local Button = Instance.new("TextButton")
+	Button.Parent = Parent
+	Button.Size = UDim2.new(1,-20,0,34)
+	Button.Position = UDim2.fromOffset(10,0)
+	Button.BackgroundColor3 = THEME.Background
+	Button.Text = Text
+	Button.Font = Enum.Font.GothamBold
+	Button.TextScaled = true
+	Button.TextColor3 = THEME.Text
+	Button.AutoButtonColor = false
+
+	local Corner = Instance.new("UICorner")
+	Corner.CornerRadius = UDim.new(0,8)
+	Corner.Parent = Button
+
+	local Stroke = Instance.new("UIStroke")
+	Stroke.Parent = Button
+	Stroke.Color = THEME.Accent
+
+	Button.MouseEnter:Connect(function()
+		TweenService:Create(
+			Button,
+			TweenInfo.new(.15),
+			{
+				BackgroundColor3 = THEME.Accent
+			}
+		):Play()
+	end)
+
+	Button.MouseLeave:Connect(function()
+		TweenService:Create(
+			Button,
+			TweenInfo.new(.15),
+			{
+				BackgroundColor3 = THEME.Background
+			}
+		):Play()
+	end)
+
+	return Button
+
+end
+
+----------------------------------------------------
+-- ACTION SECTION
+----------------------------------------------------
+
+local ActionSection = Instance.new("Frame")
+ActionSection.Parent = Content
+ActionSection.Size = UDim2.new(1,-4,0,150)
+ActionSection.BackgroundColor3 = THEME.Background2
+
+local ActionCorner = Instance.new("UICorner")
+ActionCorner.CornerRadius = UDim.new(0,10)
+ActionCorner.Parent = ActionSection
+
+local ActionStroke = Instance.new("UIStroke")
+ActionStroke.Parent = ActionSection
+ActionStroke.Color = THEME.Accent
+
+local ActionTitle = Instance.new("TextLabel")
+ActionTitle.Parent = ActionSection
+ActionTitle.BackgroundTransparency = 1
+ActionTitle.Size = UDim2.new(1,-20,0,28)
+ActionTitle.Position = UDim2.fromOffset(10,5)
+ActionTitle.Text = "Theme"
+ActionTitle.TextXAlignment = Enum.TextXAlignment.Left
+ActionTitle.TextScaled = true
+ActionTitle.Font = Enum.Font.GothamBold
+ActionTitle.TextColor3 = THEME.Text
+
+local ApplyButton = CreateButton(ActionSection,"Apply Accent")
+ApplyButton.Position = UDim2.fromOffset(10,40)
+
+local ResetButton = CreateButton(ActionSection,"Reset Theme")
+ResetButton.Position = UDim2.fromOffset(10,82)
+
+----------------------------------------------------
+-- APPLY
+----------------------------------------------------
+
+ApplyButton.MouseButton1Click:Connect(function()
+
+	Notify("Accent color updated.")
+
+end)
+
+----------------------------------------------------
+-- RESET
+----------------------------------------------------
+
+ResetButton.MouseButton1Click:Connect(function()
+
+	local Default = Color3.fromRGB(150,0,255)
+
+	ApplyAccent(Default)
+
+	RBox.Text = "150"
+	GBox.Text = "0"
+	BBox.Text = "255"
+
+	Notify("Theme reset.")
+
+end)
+
+----------------------------------------------------
+-- UPDATE EXISTING STROKES
+----------------------------------------------------
+
+local function RefreshTheme()
+
+	for _,Obj in ipairs(ScreenGui:GetDescendants()) do
+
+		if Obj:IsA("UIStroke") then
+			Obj.Color = THEME.Accent
+		end
+
+	end
+
+end
+
+ApplyButton.MouseButton1Click:Connect(RefreshTheme)
+ResetButton.MouseButton1Click:Connect(RefreshTheme)
+
+----------------------------------------------------
+-- PART 5 CONTINUES BELOW
+----------------------------------------------------
+
+--// INSERT NEXT PART BELOW THIS LINE
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 5/?
+--// SETTINGS SAVE / LOAD
+--// Paste directly below Part 4
+--//========================================================--
+
+----------------------------------------------------
+-- SETTINGS API
+----------------------------------------------------
+
+local SettingsManager = {}
+
+SettingsManager.Values = {
+	AccentColor = THEME.Accent,
+	WindowOpen = false,
+	Minimized = false
+}
+
+----------------------------------------------------
+-- APPLY SETTINGS
+----------------------------------------------------
+
+function SettingsManager:Apply()
+
+	ApplyAccent(self.Values.AccentColor)
+
+	if self.Values.Minimized then
+		SetMinimized(true)
+	else
+		SetMinimized(false)
+	end
+
+end
+
+----------------------------------------------------
+-- EXPORT
+----------------------------------------------------
+
+function SettingsManager:Export()
+
+	return {
+		AccentColor = self.Values.AccentColor,
+		WindowOpen = Open,
+		Minimized = Minimized
+	}
+
+end
+
+----------------------------------------------------
+-- IMPORT
+----------------------------------------------------
+
+function SettingsManager:Import(Data)
+
+	if typeof(Data) ~= "table" then
+		return
+	end
+
+	if Data.AccentColor then
+		self.Values.AccentColor = Data.AccentColor
+	end
+
+	if Data.Minimized ~= nil then
+		self.Values.Minimized = Data.Minimized
+	end
+
+	self:Apply()
+
+end
+
+----------------------------------------------------
+-- KEEP SETTINGS UPDATED
+----------------------------------------------------
+
+local function UpdateSettings()
+
+	SettingsManager.Values.AccentColor = THEME.Accent
+	SettingsManager.Values.WindowOpen = Open
+	SettingsManager.Values.Minimized = Minimized
+
+end
+
+RunService.RenderStepped:Connect(UpdateSettings)
+
+----------------------------------------------------
+-- SIMPLE STATUS LABEL
+----------------------------------------------------
+
+local Status = Instance.new("TextLabel")
+Status.Parent = Main
+Status.AnchorPoint = Vector2.new(0.5,1)
+Status.Position = UDim2.new(0.5,0,1,-6)
+Status.Size = UDim2.new(1,-20,0,18)
+Status.BackgroundTransparency = 1
+Status.Font = Enum.Font.Gotham
+Status.TextScaled = true
+Status.TextColor3 = THEME.Accent
+Status.Text = "Ready"
+
+local function SetStatus(Text)
+
+	Status.Text = Text
+
+	TweenService:Create(
+		Status,
+		TweenInfo.new(0.15),
+		{
+			TextColor3 = THEME.Accent
+		}
+	):Play()
+
+end
+
+ApplyButton.MouseButton1Click:Connect(function()
+
+	SetStatus("Theme Applied")
+
+end)
+
+ResetButton.MouseButton1Click:Connect(function()
+
+	SetStatus("Theme Reset")
+
+end)
+
+----------------------------------------------------
+-- SETTINGS BUTTON
+----------------------------------------------------
+
+local SaveButton = CreateButton(ActionSection,"Refresh Settings")
+SaveButton.Position = UDim2.fromOffset(10,124)
+
+SaveButton.MouseButton1Click:Connect(function()
+
+	UpdateSettings()
+
+	SetStatus("Settings Refreshed")
+
+	Notify("Settings refreshed.")
+
+end)
+
+----------------------------------------------------
+-- PART 6 CONTINUES BELOW
+----------------------------------------------------
+
+--// INSERT NEXT PART BELOW THIS LINE
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 6/?
+--// CUSTOM NOTIFICATION SYSTEM
+--// Paste directly below Part 5
+--//========================================================--
+
+----------------------------------------------------
+-- NOTIFICATION GUI
+----------------------------------------------------
+
+local NotificationHolder = Instance.new("Frame")
+NotificationHolder.Name = "Notifications"
+NotificationHolder.Parent = ScreenGui
+NotificationHolder.AnchorPoint = Vector2.new(1,1)
+NotificationHolder.Position = UDim2.new(1,-15,1,-15)
+NotificationHolder.Size = UDim2.fromOffset(320,300)
+NotificationHolder.BackgroundTransparency = 1
+
+local NotificationLayout = Instance.new("UIListLayout")
+NotificationLayout.Parent = NotificationHolder
+NotificationLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+NotificationLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+NotificationLayout.SortOrder = Enum.SortOrder.LayoutOrder
+NotificationLayout.Padding = UDim.new(0,8)
+
+----------------------------------------------------
+-- NOTIFICATION FUNCTION
+----------------------------------------------------
+
+local Notification = {}
+
+function Notification:Create(Title,Text,Duration)
+
+	Duration = Duration or 2
+
+	local Card = Instance.new("Frame")
+	Card.Parent = NotificationHolder
+	Card.Size = UDim2.new(1,0,0,70)
+	Card.BackgroundColor3 = THEME.Background
+	Card.BackgroundTransparency = 1
+
+	local Corner = Instance.new("UICorner")
+	Corner.CornerRadius = UDim.new(0,12)
+	Corner.Parent = Card
+
+	local Stroke = Instance.new("UIStroke")
+	Stroke.Parent = Card
+	Stroke.Color = THEME.Accent
+	Stroke.Thickness = 2
+
+	local TitleLabel = Instance.new("TextLabel")
+	TitleLabel.Parent = Card
+	TitleLabel.BackgroundTransparency = 1
+	TitleLabel.Position = UDim2.fromOffset(12,8)
+	TitleLabel.Size = UDim2.new(1,-24,0,22)
+	TitleLabel.Text = Title
+	TitleLabel.Font = Enum.Font.GothamBold
+	TitleLabel.TextScaled = true
+	TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	TitleLabel.TextColor3 = THEME.Text
+
+	local TextLabel = Instance.new("TextLabel")
+	TextLabel.Parent = Card
+	TextLabel.BackgroundTransparency = 1
+	TextLabel.Position = UDim2.fromOffset(12,32)
+	TextLabel.Size = UDim2.new(1,-24,0,28)
+	TextLabel.Text = Text
+	TextLabel.Font = Enum.Font.Gotham
+	TextLabel.TextWrapped = true
+	TextLabel.TextScaled = true
+	TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+	TextLabel.TextColor3 = Color3.fromRGB(220,220,220)
+
+	TweenService:Create(
+		Card,
+		TweenInfo.new(.2,Enum.EasingStyle.Quint),
+		{
+			BackgroundTransparency = 0
+		}
+	):Play()
+
+	task.delay(Duration,function()
+
+		local Tween = TweenService:Create(
+			Card,
+			TweenInfo.new(.2),
+			{
+				BackgroundTransparency = 1
+			}
+		)
+
+		Tween:Play()
+
+		Tween.Completed:Wait()
+
+		Card:Destroy()
+
+	end)
+
+end
+
+----------------------------------------------------
+-- OVERRIDE NOTIFY
+----------------------------------------------------
+
+Notify = function(Text)
+
+	Notification:Create(
+		"Studio Hub",
+		Text,
+		1.5
+	)
+
+end
+
+----------------------------------------------------
+-- DEMO
+----------------------------------------------------
+
+Notify("Notification system loaded.")
+
+----------------------------------------------------
+-- BUTTON EVENTS
+----------------------------------------------------
+
+ApplyButton.MouseButton1Click:Connect(function()
+
+	Notify("Accent color applied.")
+
+end)
+
+ResetButton.MouseButton1Click:Connect(function()
+
+	Notify("Theme reset.")
+
+end)
+
+SaveButton.MouseButton1Click:Connect(function()
+
+	Notify("Settings refreshed.")
+
+end)
+
+----------------------------------------------------
+-- PART 7 CONTINUES BELOW
+----------------------------------------------------
+
+--// INSERT NEXT PART BELOW THIS LINE
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 7/?
+--// CONFIG SYSTEM (Studio Session)
+--// Paste directly below Part 6
+--//========================================================--
+
+----------------------------------------------------
+-- CONFIG
+----------------------------------------------------
+
+local HttpService = game:GetService("HttpService")
+
+local Config = {}
+
+Config.Data = {
+	AccentColor = THEME.Accent,
+	WindowOpen = false,
+	WindowPosition = Main.Position,
+	WindowSize = Main.Size,
+	Minimized = false
+}
+
+----------------------------------------------------
+-- SAVE CURRENT VALUES
+----------------------------------------------------
+
+function Config:Capture()
+
+	self.Data.AccentColor = THEME.Accent
+	self.Data.WindowOpen = Open
+	self.Data.WindowPosition = Main.Position
+	self.Data.WindowSize = Main.Size
+	self.Data.Minimized = Minimized
+
+end
+
+----------------------------------------------------
+-- LOAD VALUES
+----------------------------------------------------
+
+function Config:Apply()
+
+	ApplyAccent(self.Data.AccentColor)
+
+	Main.Position = self.Data.WindowPosition
+	Main.Size = self.Data.WindowSize
+
+	if self.Data.Minimized then
+		SetMinimized(true)
+	else
+		SetMinimized(false)
+	end
+
+	if self.Data.WindowOpen then
+		Main.Visible = true
+	end
+
+end
+
+----------------------------------------------------
+-- EXPORT STRING
+----------------------------------------------------
+
+function Config:Export()
+
+	self:Capture()
+
+	local Export = {
+
+		AccentColor = {
+			R = math.floor(self.Data.AccentColor.R*255),
+			G = math.floor(self.Data.AccentColor.G*255),
+			B = math.floor(self.Data.AccentColor.B*255)
+		},
+
+		WindowOpen = self.Data.WindowOpen,
+		Minimized = self.Data.Minimized
+
+	}
+
+	return HttpService:JSONEncode(Export)
+
+end
+
+----------------------------------------------------
+-- IMPORT STRING
+----------------------------------------------------
+
+function Config:Import(Json)
+
+	local Success,Data = pcall(function()
+
+		return HttpService:JSONDecode(Json)
+
+	end)
+
+	if not Success then
+		return false
+	end
+
+	if Data.AccentColor then
+
+		self.Data.AccentColor = Color3.fromRGB(
+
+			Data.AccentColor.R,
+			Data.AccentColor.G,
+			Data.AccentColor.B
+
+		)
+
+	end
+
+	self.Data.WindowOpen = Data.WindowOpen or false
+	self.Data.Minimized = Data.Minimized or false
+
+	self:Apply()
+
+	return true
+
+end
+
+----------------------------------------------------
+-- CONFIG SECTION
+----------------------------------------------------
+
+local ConfigSection = Instance.new("Frame")
+ConfigSection.Parent = Content
+ConfigSection.Size = UDim2.new(1,-4,0,170)
+ConfigSection.BackgroundColor3 = THEME.Background2
+
+Instance.new("UICorner",ConfigSection).CornerRadius = UDim.new(0,10)
+
+local Stroke = Instance.new("UIStroke")
+Stroke.Parent = ConfigSection
+Stroke.Color = THEME.Accent
+
+local Title = Instance.new("TextLabel")
+Title.Parent = ConfigSection
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.fromOffset(10,8)
+Title.Size = UDim2.new(1,-20,0,24)
+Title.Text = "Configuration"
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextScaled = true
+Title.Font = Enum.Font.GothamBold
+Title.TextColor3 = THEME.Text
+
+local ExportBox = Instance.new("TextBox")
+ExportBox.Parent = ConfigSection
+ExportBox.Position = UDim2.fromOffset(10,42)
+ExportBox.Size = UDim2.new(1,-20,0,32)
+ExportBox.BackgroundColor3 = THEME.Background
+ExportBox.TextColor3 = THEME.Text
+ExportBox.ClearTextOnFocus = false
+ExportBox.TextScaled = true
+ExportBox.Text = ""
+
+Instance.new("UICorner",ExportBox).CornerRadius = UDim.new(0,8)
+
+local ExportButton = CreateButton(ConfigSection,"Export Config")
+ExportButton.Position = UDim2.fromOffset(10,82)
+
+local ImportButton = CreateButton(ConfigSection,"Import Config")
+ImportButton.Position = UDim2.fromOffset(10,122)
+
+----------------------------------------------------
+-- BUTTONS
+----------------------------------------------------
+
+ExportButton.MouseButton1Click:Connect(function()
+
+	ExportBox.Text = Config:Export()
+
+	Notify("Configuration exported.")
+
+end)
+
+ImportButton.MouseButton1Click:Connect(function()
+
+	if Config:Import(ExportBox.Text) then
+
+		Notify("Configuration imported.")
+
+	else
+
+		Notify("Invalid configuration.")
+
+	end
+
+end)
+
+----------------------------------------------------
+-- PART 8 CONTINUES BELOW
+----------------------------------------------------
+
+--// INSERT NEXT PART BELOW THIS LINE
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 8/?
+--// GRADIENT EDITOR (FOR YOUR GAME)
+--// Paste directly below Part 7
+--//========================================================--
+
+----------------------------------------------------
+-- GRADIENT DATA
+----------------------------------------------------
+
+local GradientSettings = {
+	StartColor = Color3.fromRGB(0,0,0),
+	EndColor = Color3.fromRGB(150,0,255)
+}
+
+local function ColorToHex(Color)
+	return string.format(
+		"#%02X%02X%02X",
+		math.floor(Color.R*255),
+		math.floor(Color.G*255),
+		math.floor(Color.B*255)
+	)
+end
+
+local function HexToColor(Hex)
+
+	Hex = Hex:gsub("#","")
+
+	if #Hex ~= 6 then
+		return nil
+	end
+
+	local R = tonumber(Hex:sub(1,2),16)
+	local G = tonumber(Hex:sub(3,4),16)
+	local B = tonumber(Hex:sub(5,6),16)
+
+	if not (R and G and B) then
+		return nil
+	end
+
+	return Color3.fromRGB(R,G,B)
+
+end
+
+local function CurrentGradient()
+
+	return ColorSequence.new({
+		ColorSequenceKeypoint.new(0,GradientSettings.StartColor),
+		ColorSequenceKeypoint.new(1,GradientSettings.EndColor)
+	})
+
+end
+
+----------------------------------------------------
+-- SECTION
+----------------------------------------------------
+
+local GradientFrame = Instance.new("Frame")
+GradientFrame.Parent = Content
+GradientFrame.Size = UDim2.new(1,-4,0,250)
+GradientFrame.BackgroundColor3 = THEME.Background2
+
+Instance.new("UICorner",GradientFrame).CornerRadius = UDim.new(0,10)
+
+local Stroke = Instance.new("UIStroke")
+Stroke.Parent = GradientFrame
+Stroke.Color = THEME.Accent
+
+local Title = Instance.new("TextLabel")
+Title.Parent = GradientFrame
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.fromOffset(10,8)
+Title.Size = UDim2.new(1,-20,0,22)
+Title.Text = "Gradient Editor"
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Font = Enum.Font.GothamBold
+Title.TextScaled = true
+Title.TextColor3 = THEME.Text
+
+----------------------------------------------------
+-- PREVIEW
+----------------------------------------------------
+
+local Preview = Instance.new("Frame")
+Preview.Parent = GradientFrame
+Preview.Position = UDim2.fromOffset(10,40)
+Preview.Size = UDim2.new(1,-20,0,40)
+Preview.BackgroundColor3 = Color3.new(1,1,1)
+
+Instance.new("UICorner",Preview).CornerRadius = UDim.new(0,8)
+
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Parent = Preview
+UIGradient.Color = CurrentGradient()
+
+----------------------------------------------------
+-- HEX INPUTS
+----------------------------------------------------
+
+local function CreateHexBox(Y, Default)
+
+	local Box = Instance.new("TextBox")
+	Box.Parent = GradientFrame
+	Box.Position = UDim2.fromOffset(10,Y)
+	Box.Size = UDim2.new(1,-20,0,30)
+	Box.BackgroundColor3 = THEME.Background
+	Box.TextColor3 = THEME.Text
+	Box.Font = Enum.Font.Gotham
+	Box.TextScaled = true
+	Box.ClearTextOnFocus = false
+	Box.Text = Default
+
+	Instance.new("UICorner",Box).CornerRadius = UDim.new(0,8)
+
+	return Box
+
+end
+
+local StartHex = CreateHexBox(95, ColorToHex(GradientSettings.StartColor))
+local EndHex = CreateHexBox(135, ColorToHex(GradientSettings.EndColor))
+
+----------------------------------------------------
+-- APPLY
+----------------------------------------------------
+
+local ApplyGradientButton = CreateButton(GradientFrame,"Apply Gradient")
+ApplyGradientButton.Position = UDim2.fromOffset(10,180)
+
+local function RefreshPreview()
+
+	UIGradient.Color = CurrentGradient()
+
+end
+
+ApplyGradientButton.MouseButton1Click:Connect(function()
+
+	local Start = HexToColor(StartHex.Text)
+	local Finish = HexToColor(EndHex.Text)
+
+	if not Start then
+		Notify("Invalid start HEX.")
+		return
+	end
+
+	if not Finish then
+		Notify("Invalid end HEX.")
+		return
+	end
+
+	GradientSettings.StartColor = Start
+	GradientSettings.EndColor = Finish
+
+	RefreshPreview()
+
+	SetStatus("Gradient Updated")
+	Notify("Gradient updated.")
+
+end)
+
+----------------------------------------------------
+-- API
+----------------------------------------------------
+
+local GradientAPI = {}
+
+function GradientAPI:GetColorSequence()
+
+	return CurrentGradient()
+
+end
+
+function GradientAPI:GetStartColor()
+
+	return GradientSettings.StartColor
+
+end
+
+function GradientAPI:GetEndColor()
+
+	return GradientSettings.EndColor
+
+end
+
+----------------------------------------------------
+-- READY
+----------------------------------------------------
+
+RefreshPreview()
+
+----------------------------------------------------
+-- PART 9 CONTINUES BELOW
+----------------------------------------------------
+
+--// INSERT NEXT PART BELOW THIS LINE
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 9/?
+--// GAME SETTINGS PANEL (FOR YOUR OWN GAME)
+--// Paste directly below Part 8
+--//========================================================--
+
+----------------------------------------------------
+-- SETTINGS DATA
+----------------------------------------------------
+
+local GameSettings = {
+	MasterVolume = 100,
+	MusicVolume = 100,
+	SFXVolume = 100,
+
+	CameraFOV = 70,
+
+	ShowNotifications = true,
+
+	AutoSprint = false,
+
+	HideHUD = false
+}
+
+----------------------------------------------------
+-- SECTION
+----------------------------------------------------
+
+local GameSection = Instance.new("Frame")
+GameSection.Parent = Content
+GameSection.Size = UDim2.new(1,-4,0,360)
+GameSection.BackgroundColor3 = THEME.Background2
+
+Instance.new("UICorner",GameSection).CornerRadius = UDim.new(0,10)
+
+local GameStroke = Instance.new("UIStroke")
+GameStroke.Parent = GameSection
+GameStroke.Color = THEME.Accent
+
+local GameTitle = Instance.new("TextLabel")
+GameTitle.Parent = GameSection
+GameTitle.BackgroundTransparency = 1
+GameTitle.Position = UDim2.fromOffset(10,8)
+GameTitle.Size = UDim2.new(1,-20,0,24)
+GameTitle.Text = "Game Settings"
+GameTitle.Font = Enum.Font.GothamBold
+GameTitle.TextScaled = true
+GameTitle.TextXAlignment = Enum.TextXAlignment.Left
+GameTitle.TextColor3 = THEME.Text
+
+----------------------------------------------------
+-- LABEL CREATOR
+----------------------------------------------------
+
+local function CreateLabel(Text,Y)
+
+	local L = Instance.new("TextLabel")
+	L.Parent = GameSection
+	L.BackgroundTransparency = 1
+	L.Position = UDim2.fromOffset(10,Y)
+	L.Size = UDim2.new(.5,0,0,24)
+	L.Text = Text
+	L.Font = Enum.Font.Gotham
+	L.TextScaled = true
+	L.TextXAlignment = Enum.TextXAlignment.Left
+	L.TextColor3 = THEME.Text
+
+	return L
+
+end
+
+----------------------------------------------------
+-- VALUE BOX
+----------------------------------------------------
+
+local function CreateNumberBox(Value,Y)
+
+	local Box = Instance.new("TextBox")
+	Box.Parent = GameSection
+	Box.Position = UDim2.new(1,-80,0,Y)
+	Box.Size = UDim2.fromOffset(70,24)
+	Box.BackgroundColor3 = THEME.Background
+	Box.TextColor3 = THEME.Text
+	Box.TextScaled = true
+	Box.ClearTextOnFocus = false
+	Box.Font = Enum.Font.Gotham
+	Box.Text = tostring(Value)
+
+	Instance.new("UICorner",Box).CornerRadius = UDim.new(0,8)
+
+	return Box
+
+end
+
+----------------------------------------------------
+-- MASTER
+----------------------------------------------------
+
+CreateLabel("Master Volume",45)
+local MasterBox = CreateNumberBox(100,45)
+
+----------------------------------------------------
+-- MUSIC
+----------------------------------------------------
+
+CreateLabel("Music Volume",80)
+local MusicBox = CreateNumberBox(100,80)
+
+----------------------------------------------------
+-- SFX
+----------------------------------------------------
+
+CreateLabel("SFX Volume",115)
+local SFXBox = CreateNumberBox(100,115)
+
+----------------------------------------------------
+-- FOV
+----------------------------------------------------
+
+CreateLabel("Camera FOV",150)
+local FOVBox = CreateNumberBox(70,150)
+
+----------------------------------------------------
+-- TOGGLES
+----------------------------------------------------
+
+CreateLabel("Notifications",195)
+local NotificationToggle = CreateToggle(GameSection,true)
+
+NotificationToggle:Set(true)
+
+CreateLabel("Auto Sprint",235)
+local SprintToggle = CreateToggle(GameSection,false)
+
+CreateLabel("Hide HUD",275)
+local HUDToggle = CreateToggle(GameSection,false)
+
+----------------------------------------------------
+-- APPLY
+----------------------------------------------------
+
+local ApplyGameButton = CreateButton(GameSection,"Apply")
+ApplyGameButton.Position = UDim2.fromOffset(10,315)
+
+ApplyGameButton.MouseButton1Click:Connect(function()
+
+	GameSettings.MasterVolume =
+		math.clamp(tonumber(MasterBox.Text) or 100,0,100)
+
+	GameSettings.MusicVolume =
+		math.clamp(tonumber(MusicBox.Text) or 100,0,100)
+
+	GameSettings.SFXVolume =
+		math.clamp(tonumber(SFXBox.Text) or 100,0,100)
+
+	GameSettings.CameraFOV =
+		math.clamp(tonumber(FOVBox.Text) or 70,40,120)
+
+	GameSettings.ShowNotifications =
+		NotificationToggle:Get()
+
+	GameSettings.AutoSprint =
+		SprintToggle:Get()
+
+	GameSettings.HideHUD =
+		HUDToggle:Get()
+
+	workspace.CurrentCamera.FieldOfView =
+		GameSettings.CameraFOV
+
+	SetStatus("Game settings applied.")
+
+	if GameSettings.ShowNotifications then
+		Notify("Settings updated.")
+	end
+
+end)
+
+----------------------------------------------------
+-- API
+----------------------------------------------------
+
+local GameAPI = {}
+
+function GameAPI:GetSettings()
+
+	return GameSettings
+
+end
+
+----------------------------------------------------
+-- PART 10 CONTINUES BELOW
+----------------------------------------------------
+
+--// INSERT NEXT PART BELOW THIS LINE
+--//========================================================--
+--// ROBLOX STUDIO HUB
+--// PART 10/10
+--// LOCAL SAVE / LOAD + KEYBINDS + FINISH
+--// Paste directly below Part 9
+--//========================================================--
+
+----------------------------------------------------
+-- SERVICES
+----------------------------------------------------
+
+local UserInputService = game:GetService("UserInputService")
+
+----------------------------------------------------
+-- LOCAL SAVE (SESSION)
+----------------------------------------------------
+
+local SavedSettings = {}
+
+local function SaveCurrentSettings()
+
+	SavedSettings.Theme = {
+		Accent = THEME.Accent,
+		Background = THEME.Background,
+		Background2 = THEME.Background2
+	}
+
+	SavedSettings.Game = table.clone(GameAPI:GetSettings())
+
+	SavedSettings.WindowPosition = Main.Position
+	SavedSettings.WindowSize = Main.Size
+	SavedSettings.Minimized = Minimized
+
+end
+
+local function LoadCurrentSettings()
+
+	if not SavedSettings.Game then
+		return
+	end
+
+	Main.Position = SavedSettings.WindowPosition
+	Main.Size = SavedSettings.WindowSize
+
+	ApplyAccent(SavedSettings.Theme.Accent)
+
+	workspace.CurrentCamera.FieldOfView =
+		SavedSettings.Game.CameraFOV
+
+	SetStatus("Settings Loaded")
+
+	Notify("Session settings restored.")
+
+end
+
+----------------------------------------------------
+-- SETTINGS BUTTONS
+----------------------------------------------------
+
+local BottomSection = Instance.new("Frame")
+BottomSection.Parent = Content
+BottomSection.Size = UDim2.new(1,-4,0,150)
+BottomSection.BackgroundColor3 = THEME.Background2
+
+Instance.new("UICorner",BottomSection).CornerRadius = UDim.new(0,10)
+
+local BottomStroke = Instance.new("UIStroke")
+BottomStroke.Parent = BottomSection
+BottomStroke.Color = THEME.Accent
+
+local BottomTitle = Instance.new("TextLabel")
+BottomTitle.Parent = BottomSection
+BottomTitle.BackgroundTransparency = 1
+BottomTitle.Position = UDim2.fromOffset(10,8)
+BottomTitle.Size = UDim2.new(1,-20,0,24)
+BottomTitle.Text = "Session"
+BottomTitle.TextScaled = true
+BottomTitle.Font = Enum.Font.GothamBold
+BottomTitle.TextColor3 = THEME.Text
+BottomTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+local SaveButton2 = CreateButton(BottomSection,"Save Session")
+SaveButton2.Position = UDim2.fromOffset(10,42)
+
+local LoadButton2 = CreateButton(BottomSection,"Load Session")
+LoadButton2.Position = UDim2.fromOffset(10,82)
+
+SaveButton2.MouseButton1Click:Connect(function()
+
+	SaveCurrentSettings()
+
+	SetStatus("Session Saved")
+	Notify("Session saved.")
+
+end)
+
+LoadButton2.MouseButton1Click:Connect(function()
+
+	LoadCurrentSettings()
+
+end)
+
+----------------------------------------------------
+-- KEYBINDS
+----------------------------------------------------
+
+local ToggleKey = Enum.KeyCode.RightShift
+
+UserInputService.InputBegan:Connect(function(Input, Processed)
+
+	if Processed then
+		return
+	end
+
+	if Input.KeyCode == ToggleKey then
+
+		ToggleHub()
+
+	end
+
+end)
+
+----------------------------------------------------
+-- WINDOW LIMITS
+----------------------------------------------------
+
+RunService.RenderStepped:Connect(function()
+
+	local Camera = workspace.CurrentCamera
+
+	if not Camera then
+		return
+	end
+
+	local Size = Camera.ViewportSize
+
+	local X = math.clamp(
+		Main.Position.X.Offset,
+		0,
+		Size.X - Main.AbsoluteSize.X
+	)
+
+	local Y = math.clamp(
+		Main.Position.Y.Offset,
+		0,
+		Size.Y - Main.AbsoluteSize.Y
+	)
+
+	Main.Position = UDim2.new(
+		0,
+		X,
+		0,
+		Y
+	)
+
+end)
+
+----------------------------------------------------
+-- READY
+----------------------------------------------------
+
+Notify("Studio Hub loaded successfully.")
+SetStatus("Ready")
+
+print("Studio Hub initialized.")
+
+--========================================================--
+-- END OF SCRIPT
+--========================================================--
