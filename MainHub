@@ -168,13 +168,16 @@ local function ToggleHub()
 
 	if Open then
 
-		Main.Visible = true
+		-- Always center the window when opening
+		Main.AnchorPoint = Vector2.new(0.5, 0.5)
+		Main.Position = UDim2.fromScale(0.5, 0.5)
 
+		Main.Visible = true
 		Main.Size = UDim2.fromOffset(420,0)
 
 		TweenService:Create(
 			Main,
-			TweenInfo.new(.25,Enum.EasingStyle.Quint),
+			TweenInfo.new(0.25, Enum.EasingStyle.Quint),
 			{
 				Size = UDim2.fromOffset(420,520)
 			}
@@ -184,14 +187,13 @@ local function ToggleHub()
 
 		local Tween = TweenService:Create(
 			Main,
-			TweenInfo.new(.25,Enum.EasingStyle.Quint),
+			TweenInfo.new(0.25, Enum.EasingStyle.Quint),
 			{
 				Size = UDim2.fromOffset(420,0)
 			}
 		)
 
 		Tween:Play()
-
 		Tween.Completed:Wait()
 
 		Main.Visible = false
