@@ -1,10 +1,3 @@
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 1/?
---// GUI FOUNDATION
---// Insert this into a LocalScript
---//========================================================--
-
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
@@ -14,10 +7,6 @@ local StarterGui = game:GetService("StarterGui")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
-----------------------------------------------------
--- SETTINGS
-----------------------------------------------------
-
 local THEME = {
 	Accent = Color3.fromRGB(150,0,255),
 	Background = Color3.fromRGB(18,18,18),
@@ -25,20 +14,12 @@ local THEME = {
 	Text = Color3.fromRGB(255,255,255)
 }
 
-----------------------------------------------------
--- GUI
-----------------------------------------------------
-
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "StudioHub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = PlayerGui
-
-----------------------------------------------------
--- GEAR BUTTON
-----------------------------------------------------
 
 local Gear = Instance.new("TextButton")
 Gear.Name = "GearButton"
@@ -61,10 +42,6 @@ GearStroke.Parent = Gear
 GearStroke.Color = THEME.Accent
 GearStroke.Thickness = 2
 
-----------------------------------------------------
--- MAIN WINDOW
-----------------------------------------------------
-
 local Main = Instance.new("Frame")
 Main.Name = "Main"
 Main.Parent = ScreenGui
@@ -83,17 +60,9 @@ MainStroke.Parent = Main
 MainStroke.Color = THEME.Accent
 MainStroke.Thickness = 2
 
-----------------------------------------------------
--- SCALE
-----------------------------------------------------
-
 local Scale = Instance.new("UIScale")
 Scale.Parent = Main
 Scale.Scale = 1
-
-----------------------------------------------------
--- TITLE BAR
-----------------------------------------------------
 
 local TopBar = Instance.new("Frame")
 TopBar.Parent = Main
@@ -111,10 +80,6 @@ Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.TextScaled = true
 Title.TextColor3 = THEME.Text
 
-----------------------------------------------------
--- MINIMIZE BUTTON
-----------------------------------------------------
-
 local Minimize = Instance.new("TextButton")
 Minimize.Parent = TopBar
 Minimize.AnchorPoint = Vector2.new(1,.5)
@@ -129,10 +94,6 @@ Minimize.TextColor3 = THEME.Text
 local MinCorner = Instance.new("UICorner")
 MinCorner.CornerRadius = UDim.new(1,0)
 MinCorner.Parent = Minimize
-
-----------------------------------------------------
--- CONTENT
-----------------------------------------------------
 
 local Content = Instance.new("ScrollingFrame")
 Content.Parent = Main
@@ -156,10 +117,6 @@ Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 	)
 end)
 
-----------------------------------------------------
--- OPEN / CLOSE
-----------------------------------------------------
-
 local Open = false
 
 local function ToggleHub()
@@ -167,8 +124,6 @@ local function ToggleHub()
 	Open = not Open
 
 	if Open then
-
-		-- Always center the window when opening
 		Main.AnchorPoint = Vector2.new(0.5, 0.5)
 		Main.Position = UDim2.fromScale(0.5, 0.5)
 
@@ -204,10 +159,6 @@ end
 
 Gear.MouseButton1Click:Connect(ToggleHub)
 
-----------------------------------------------------
--- TOGGLE CREATOR
-----------------------------------------------------
-
 local function CreateSection(Name)
 
 	local Holder = Instance.new("Frame")
@@ -238,30 +189,10 @@ local function CreateSection(Name)
 
 end
 
-----------------------------------------------------
--- DEMO SECTIONS
-----------------------------------------------------
-
 CreateSection("FPS Booster")
 CreateSection("Gradient")
 CreateSection("Theme")
 CreateSection("Settings")
-
-----------------------------------------------------
--- PART 2 CONTINUES BELOW
-----------------------------------------------------
-
---// INSERT NEXT PART BELOW THIS LINE
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 2/?
---// DRAGGING + MINIMIZE + TOGGLES
---// Paste directly below Part 1
---//========================================================--
-
-----------------------------------------------------
--- DRAG SYSTEM (Mouse + Touch)
-----------------------------------------------------
 
 local Dragging = false
 local DragInput
@@ -321,10 +252,6 @@ UIS.InputChanged:Connect(function(Input)
 
 end)
 
-----------------------------------------------------
--- RESPONSIVE SCALE
-----------------------------------------------------
-
 local function UpdateScale()
 
 	local Viewport = workspace.CurrentCamera.ViewportSize
@@ -344,10 +271,6 @@ end
 UpdateScale()
 
 workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(UpdateScale)
-
-----------------------------------------------------
--- MINIMIZE
-----------------------------------------------------
 
 local Minimized = false
 
@@ -392,10 +315,6 @@ Minimize.MouseButton1Click:Connect(function()
 	SetMinimized(not Minimized)
 
 end)
-
-----------------------------------------------------
--- TOGGLE CREATOR
-----------------------------------------------------
 
 local function CreateToggle(Parent, Default, Callback)
 
@@ -488,10 +407,6 @@ local function CreateToggle(Parent, Default, Callback)
 
 end
 
-----------------------------------------------------
--- CREATE DEFAULT TOGGLES
-----------------------------------------------------
-
 local FPSSection = CreateSection("FPS Booster")
 local GradientSection = CreateSection("Gradient")
 local ThemeSection = CreateSection("Theme")
@@ -503,10 +418,6 @@ Toggles.FPS = CreateToggle(FPSSection,false)
 Toggles.Gradient = CreateToggle(GradientSection,false)
 Toggles.Theme = CreateToggle(ThemeSection,false)
 Toggles.Settings = CreateToggle(SettingsSection,false)
-
-----------------------------------------------------
--- NOTIFICATION
-----------------------------------------------------
 
 local function Notify(Text)
 
@@ -527,22 +438,6 @@ local function Notify(Text)
 end
 
 Notify("GUI Loaded")
-
-----------------------------------------------------
--- PART 3 CONTINUES BELOW
-----------------------------------------------------
-
---// INSERT NEXT PART BELOW THIS LINE
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 3/?
---// COLOR SETTINGS (RGB + HEX)
---// Paste directly below Part 2
---//========================================================--
-
-----------------------------------------------------
--- COLOR SETTINGS
-----------------------------------------------------
 
 local Settings = {
 	AccentColor = THEME.Accent
@@ -573,10 +468,6 @@ local function HexToColor(hex)
 
 	return Color3.fromRGB(r,g,b)
 end
-
-----------------------------------------------------
--- COLOR SECTION
-----------------------------------------------------
 
 local ColorSection = Instance.new("Frame")
 ColorSection.Parent = Content
@@ -704,22 +595,6 @@ HexBox.FocusLost:Connect(function()
 
 end)
 
-----------------------------------------------------
--- PART 4 CONTINUES BELOW
-----------------------------------------------------
-
---// INSERT NEXT PART BELOW THIS LINE
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 4/?
---// THEME + SETTINGS BUTTONS
---// Paste directly below Part 3
---//========================================================--
-
-----------------------------------------------------
--- SETTINGS STORAGE
-----------------------------------------------------
-
 local HubSettings = {
 	Theme = {
 		Accent = THEME.Accent,
@@ -733,10 +608,6 @@ local HubSettings = {
 		HideParticles = false
 	}
 }
-
-----------------------------------------------------
--- BUTTON CREATOR
-----------------------------------------------------
 
 local function CreateButton(Parent, Text)
 
@@ -783,10 +654,6 @@ local function CreateButton(Parent, Text)
 
 end
 
-----------------------------------------------------
--- ACTION SECTION
-----------------------------------------------------
-
 local ActionSection = Instance.new("Frame")
 ActionSection.Parent = Content
 ActionSection.Size = UDim2.new(1,-4,0,150)
@@ -817,19 +684,11 @@ ApplyButton.Position = UDim2.fromOffset(10,40)
 local ResetButton = CreateButton(ActionSection,"Reset Theme")
 ResetButton.Position = UDim2.fromOffset(10,82)
 
-----------------------------------------------------
--- APPLY
-----------------------------------------------------
-
 ApplyButton.MouseButton1Click:Connect(function()
 
 	Notify("Accent color updated.")
 
 end)
-
-----------------------------------------------------
--- RESET
-----------------------------------------------------
 
 ResetButton.MouseButton1Click:Connect(function()
 
@@ -844,10 +703,6 @@ ResetButton.MouseButton1Click:Connect(function()
 	Notify("Theme reset.")
 
 end)
-
-----------------------------------------------------
--- UPDATE EXISTING STROKES
-----------------------------------------------------
 
 local function RefreshTheme()
 
@@ -864,22 +719,6 @@ end
 ApplyButton.MouseButton1Click:Connect(RefreshTheme)
 ResetButton.MouseButton1Click:Connect(RefreshTheme)
 
-----------------------------------------------------
--- PART 5 CONTINUES BELOW
-----------------------------------------------------
-
---// INSERT NEXT PART BELOW THIS LINE
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 5/?
---// SETTINGS SAVE / LOAD
---// Paste directly below Part 4
---//========================================================--
-
-----------------------------------------------------
--- SETTINGS API
-----------------------------------------------------
-
 local SettingsManager = {}
 
 SettingsManager.Values = {
@@ -887,10 +726,6 @@ SettingsManager.Values = {
 	WindowOpen = false,
 	Minimized = false
 }
-
-----------------------------------------------------
--- APPLY SETTINGS
-----------------------------------------------------
 
 function SettingsManager:Apply()
 
@@ -904,10 +739,6 @@ function SettingsManager:Apply()
 
 end
 
-----------------------------------------------------
--- EXPORT
-----------------------------------------------------
-
 function SettingsManager:Export()
 
 	return {
@@ -917,10 +748,6 @@ function SettingsManager:Export()
 	}
 
 end
-
-----------------------------------------------------
--- IMPORT
-----------------------------------------------------
 
 function SettingsManager:Import(Data)
 
@@ -940,10 +767,6 @@ function SettingsManager:Import(Data)
 
 end
 
-----------------------------------------------------
--- KEEP SETTINGS UPDATED
-----------------------------------------------------
-
 local function UpdateSettings()
 
 	SettingsManager.Values.AccentColor = THEME.Accent
@@ -953,10 +776,6 @@ local function UpdateSettings()
 end
 
 RunService.RenderStepped:Connect(UpdateSettings)
-
-----------------------------------------------------
--- SIMPLE STATUS LABEL
-----------------------------------------------------
 
 local Status = Instance.new("TextLabel")
 Status.Parent = Main
@@ -995,10 +814,6 @@ ResetButton.MouseButton1Click:Connect(function()
 
 end)
 
-----------------------------------------------------
--- SETTINGS BUTTON
-----------------------------------------------------
-
 local SaveButton = CreateButton(ActionSection,"Refresh Settings")
 SaveButton.Position = UDim2.fromOffset(10,124)
 
@@ -1011,22 +826,6 @@ SaveButton.MouseButton1Click:Connect(function()
 	Notify("Settings refreshed.")
 
 end)
-
-----------------------------------------------------
--- PART 6 CONTINUES BELOW
-----------------------------------------------------
-
---// INSERT NEXT PART BELOW THIS LINE
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 6/?
---// CUSTOM NOTIFICATION SYSTEM
---// Paste directly below Part 5
---//========================================================--
-
-----------------------------------------------------
--- NOTIFICATION GUI
-----------------------------------------------------
 
 local NotificationHolder = Instance.new("Frame")
 NotificationHolder.Name = "Notifications"
@@ -1042,10 +841,6 @@ NotificationLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
 NotificationLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
 NotificationLayout.SortOrder = Enum.SortOrder.LayoutOrder
 NotificationLayout.Padding = UDim.new(0,8)
-
-----------------------------------------------------
--- NOTIFICATION FUNCTION
-----------------------------------------------------
 
 local Notification = {}
 
@@ -1119,10 +914,6 @@ function Notification:Create(Title,Text,Duration)
 
 end
 
-----------------------------------------------------
--- OVERRIDE NOTIFY
-----------------------------------------------------
-
 Notify = function(Text)
 
 	Notification:Create(
@@ -1133,15 +924,7 @@ Notify = function(Text)
 
 end
 
-----------------------------------------------------
--- DEMO
-----------------------------------------------------
-
 Notify("Notification system loaded.")
-
-----------------------------------------------------
--- BUTTON EVENTS
-----------------------------------------------------
 
 ApplyButton.MouseButton1Click:Connect(function()
 
@@ -1161,22 +944,6 @@ SaveButton.MouseButton1Click:Connect(function()
 
 end)
 
-----------------------------------------------------
--- PART 7 CONTINUES BELOW
-----------------------------------------------------
-
---// INSERT NEXT PART BELOW THIS LINE
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 7/?
---// CONFIG SYSTEM (Studio Session)
---// Paste directly below Part 6
---//========================================================--
-
-----------------------------------------------------
--- CONFIG
-----------------------------------------------------
-
 local HttpService = game:GetService("HttpService")
 
 local Config = {}
@@ -1189,10 +956,6 @@ Config.Data = {
 	Minimized = false
 }
 
-----------------------------------------------------
--- SAVE CURRENT VALUES
-----------------------------------------------------
-
 function Config:Capture()
 
 	self.Data.AccentColor = THEME.Accent
@@ -1202,10 +965,6 @@ function Config:Capture()
 	self.Data.Minimized = Minimized
 
 end
-
-----------------------------------------------------
--- LOAD VALUES
-----------------------------------------------------
 
 function Config:Apply()
 
@@ -1225,10 +984,6 @@ function Config:Apply()
 	end
 
 end
-
-----------------------------------------------------
--- EXPORT STRING
-----------------------------------------------------
 
 function Config:Export()
 
@@ -1250,10 +1005,6 @@ function Config:Export()
 	return HttpService:JSONEncode(Export)
 
 end
-
-----------------------------------------------------
--- IMPORT STRING
-----------------------------------------------------
 
 function Config:Import(Json)
 
@@ -1287,10 +1038,6 @@ function Config:Import(Json)
 	return true
 
 end
-
-----------------------------------------------------
--- CONFIG SECTION
-----------------------------------------------------
 
 local ConfigSection = Instance.new("Frame")
 ConfigSection.Parent = Content
@@ -1332,10 +1079,6 @@ ExportButton.Position = UDim2.fromOffset(10,82)
 local ImportButton = CreateButton(ConfigSection,"Import Config")
 ImportButton.Position = UDim2.fromOffset(10,122)
 
-----------------------------------------------------
--- BUTTONS
-----------------------------------------------------
-
 ExportButton.MouseButton1Click:Connect(function()
 
 	ExportBox.Text = Config:Export()
@@ -1357,22 +1100,6 @@ ImportButton.MouseButton1Click:Connect(function()
 	end
 
 end)
-
-----------------------------------------------------
--- PART 8 CONTINUES BELOW
-----------------------------------------------------
-
---// INSERT NEXT PART BELOW THIS LINE
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 8/?
---// GRADIENT EDITOR (FOR YOUR GAME)
---// Paste directly below Part 7
---//========================================================--
-
-----------------------------------------------------
--- GRADIENT DATA
-----------------------------------------------------
 
 local GradientSettings = {
 	StartColor = Color3.fromRGB(0,0,0),
@@ -1417,10 +1144,6 @@ local function CurrentGradient()
 
 end
 
-----------------------------------------------------
--- SECTION
-----------------------------------------------------
-
 local GradientFrame = Instance.new("Frame")
 GradientFrame.Parent = Content
 GradientFrame.Size = UDim2.new(1,-4,0,250)
@@ -1443,10 +1166,6 @@ Title.Font = Enum.Font.GothamBold
 Title.TextScaled = true
 Title.TextColor3 = THEME.Text
 
-----------------------------------------------------
--- PREVIEW
-----------------------------------------------------
-
 local Preview = Instance.new("Frame")
 Preview.Parent = GradientFrame
 Preview.Position = UDim2.fromOffset(10,40)
@@ -1458,10 +1177,6 @@ Instance.new("UICorner",Preview).CornerRadius = UDim.new(0,8)
 local UIGradient = Instance.new("UIGradient")
 UIGradient.Parent = Preview
 UIGradient.Color = CurrentGradient()
-
-----------------------------------------------------
--- HEX INPUTS
-----------------------------------------------------
 
 local function CreateHexBox(Y, Default)
 
@@ -1484,10 +1199,6 @@ end
 
 local StartHex = CreateHexBox(95, ColorToHex(GradientSettings.StartColor))
 local EndHex = CreateHexBox(135, ColorToHex(GradientSettings.EndColor))
-
-----------------------------------------------------
--- APPLY
-----------------------------------------------------
 
 local ApplyGradientButton = CreateButton(GradientFrame,"Apply Gradient")
 ApplyGradientButton.Position = UDim2.fromOffset(10,180)
@@ -1523,10 +1234,6 @@ ApplyGradientButton.MouseButton1Click:Connect(function()
 
 end)
 
-----------------------------------------------------
--- API
-----------------------------------------------------
-
 local GradientAPI = {}
 
 function GradientAPI:GetColorSequence()
@@ -1547,27 +1254,7 @@ function GradientAPI:GetEndColor()
 
 end
 
-----------------------------------------------------
--- READY
-----------------------------------------------------
-
 RefreshPreview()
-
-----------------------------------------------------
--- PART 9 CONTINUES BELOW
-----------------------------------------------------
-
---// INSERT NEXT PART BELOW THIS LINE
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 9/?
---// GAME SETTINGS PANEL (FOR YOUR OWN GAME)
---// Paste directly below Part 8
---//========================================================--
-
-----------------------------------------------------
--- SETTINGS DATA
-----------------------------------------------------
 
 local GameSettings = {
 	MasterVolume = 100,
@@ -1582,10 +1269,6 @@ local GameSettings = {
 
 	HideHUD = false
 }
-
-----------------------------------------------------
--- SECTION
-----------------------------------------------------
 
 local GameSection = Instance.new("Frame")
 GameSection.Parent = Content
@@ -1609,10 +1292,6 @@ GameTitle.TextScaled = true
 GameTitle.TextXAlignment = Enum.TextXAlignment.Left
 GameTitle.TextColor3 = THEME.Text
 
-----------------------------------------------------
--- LABEL CREATOR
-----------------------------------------------------
-
 local function CreateLabel(Text,Y)
 
 	local L = Instance.new("TextLabel")
@@ -1629,10 +1308,6 @@ local function CreateLabel(Text,Y)
 	return L
 
 end
-
-----------------------------------------------------
--- VALUE BOX
-----------------------------------------------------
 
 local function CreateNumberBox(Value,Y)
 
@@ -1653,37 +1328,17 @@ local function CreateNumberBox(Value,Y)
 
 end
 
-----------------------------------------------------
--- MASTER
-----------------------------------------------------
-
 CreateLabel("Master Volume",45)
 local MasterBox = CreateNumberBox(100,45)
-
-----------------------------------------------------
--- MUSIC
-----------------------------------------------------
 
 CreateLabel("Music Volume",80)
 local MusicBox = CreateNumberBox(100,80)
 
-----------------------------------------------------
--- SFX
-----------------------------------------------------
-
 CreateLabel("SFX Volume",115)
 local SFXBox = CreateNumberBox(100,115)
 
-----------------------------------------------------
--- FOV
-----------------------------------------------------
-
 CreateLabel("Camera FOV",150)
 local FOVBox = CreateNumberBox(70,150)
-
-----------------------------------------------------
--- TOGGLES
-----------------------------------------------------
 
 CreateLabel("Notifications",195)
 local NotificationToggle = CreateToggle(GameSection,true)
@@ -1695,10 +1350,6 @@ local SprintToggle = CreateToggle(GameSection,false)
 
 CreateLabel("Hide HUD",275)
 local HUDToggle = CreateToggle(GameSection,false)
-
-----------------------------------------------------
--- APPLY
-----------------------------------------------------
 
 local ApplyGameButton = CreateButton(GameSection,"Apply")
 ApplyGameButton.Position = UDim2.fromOffset(10,315)
@@ -1737,10 +1388,6 @@ ApplyGameButton.MouseButton1Click:Connect(function()
 
 end)
 
-----------------------------------------------------
--- API
-----------------------------------------------------
-
 local GameAPI = {}
 
 function GameAPI:GetSettings()
@@ -1749,27 +1396,7 @@ function GameAPI:GetSettings()
 
 end
 
-----------------------------------------------------
--- PART 10 CONTINUES BELOW
-----------------------------------------------------
-
---// INSERT NEXT PART BELOW THIS LINE
---//========================================================--
---// ROBLOX STUDIO HUB
---// PART 10/10
---// LOCAL SAVE / LOAD + KEYBINDS + FINISH
---// Paste directly below Part 9
---//========================================================--
-
-----------------------------------------------------
--- SERVICES
-----------------------------------------------------
-
 local UserInputService = game:GetService("UserInputService")
-
-----------------------------------------------------
--- LOCAL SAVE (SESSION)
-----------------------------------------------------
 
 local SavedSettings = {}
 
@@ -1808,10 +1435,6 @@ local function LoadCurrentSettings()
 	Notify("Session settings restored.")
 
 end
-
-----------------------------------------------------
--- SETTINGS BUTTONS
-----------------------------------------------------
 
 local BottomSection = Instance.new("Frame")
 BottomSection.Parent = Content
@@ -1856,10 +1479,6 @@ LoadButton2.MouseButton1Click:Connect(function()
 
 end)
 
-----------------------------------------------------
--- KEYBINDS
-----------------------------------------------------
-
 local ToggleKey = Enum.KeyCode.RightShift
 
 UserInputService.InputBegan:Connect(function(Input, Processed)
@@ -1876,15 +1495,7 @@ UserInputService.InputBegan:Connect(function(Input, Processed)
 
 end)
 
-----------------------------------------------------
--- READY
-----------------------------------------------------
-
 Notify("Studio Hub loaded successfully.")
 SetStatus("Ready")
 
 print("Studio Hub initialized.")
-
---========================================================--
--- END OF SCRIPT
---========================================================--
